@@ -13,6 +13,10 @@ const User = require("./models/user");
 const Service = require("./models/service");
 
 // Register route
+app.get('/', async (req,res)=>{
+
+     res.json({ msg: " server  successfully" });
+})
 app.post("/register", async (req, res) => {
     try {
         const { name, email, password } = req.body;
