@@ -137,6 +137,17 @@ app.post('/bookings', async (req, res) => {
     res.json(bookings);
   });
 
+  app.get('/bookings/delivered', async (req, res) => {
+    const bookings = await Booking.find({ status: 'delivered' }).sort({ createdAt: -1 });
+    res.json(bookings);
+  });
+
+  app.patch('/bookings/:id/status', async (req, res) => {
+    const { status } = req.body;
+    const booking = await Booking.findByIdAndUpdate(req.params.id, { status }, { new: true });
+    res.json(booking);
+  });
+
 app.listen(port, () => {
     console.log(`Server is running at port ${port}`);
 });
