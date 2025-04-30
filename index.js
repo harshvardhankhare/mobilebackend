@@ -132,6 +132,11 @@ app.post('/bookings', async (req, res) => {
     res.status(201).json({ message: 'Booking created', booking: newBooking });
   });
 
+  app.get('/bookings/active', async (req, res) => {
+    const bookings = await Booking.find({ status: 'active' }).sort({ createdAt: -1 });
+    res.json(bookings);
+  });
+
 app.listen(port, () => {
     console.log(`Server is running at port ${port}`);
 });
