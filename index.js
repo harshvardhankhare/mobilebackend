@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
+const authRouter = require('./routers/auth.js')
 const cors = require("cors");
 require("./DB/connectDB");
 
@@ -13,28 +13,11 @@ const User = require("./models/user");
 const Service = require("./models/service");
 const Booking = require("./models/booking");
 
-// Register route
 app.get('/', async (req,res)=>{
-
      res.json({ msg: " server  successfully" });
 })
-app.post("/register", async (req, res) => {
-    try {
-        const { name, email, password, isAdmin = false } = req.body;
+app.use("v1/auth",authRouter);
 
-        const exuser = await User.findOne({ email });
-        if (exuser) {
-            return res.status(400).json({ msg: "Email already exists" });
-        }
-
-        const newUser = new User({ name, email, password, isAdmin });
-        await newUser.save();
-        return res.json({ msg: "User registered successfully", user: newUser });
-    } catch (err) {
-        res.status(500).json({ message: "Error registering user" });
-        console.log(err);
-    }
-});
 app.post("/create-service", async (req, res) => {
     try {
         const { name, description, urlimg, category,price} = req.body;
@@ -50,28 +33,6 @@ app.post("/create-service", async (req, res) => {
     }
 });
 
-// Login route
-app.post("/login", async (req, res) => {
-
-    
-    try {
-        const { email, password } = req.body;
-        const user = await User.findOne({ email });
-
-        if (!user) {
-            return res.status(404).json({ msg: "Invalid email" });
-        }
-        if (user.password !== password) {
-            return res.status(404).json({ msg: "Invalid password" });
-        }
-        return res.json(user);
-    } catch (err) {
-        console.log(err);
-        res.status(500).json({ msg: "Server error" });
-    }
-});
-
-// Get profile route
 app.get("/profile/:userId", async (req, res) => {
     try {
         const userId = req.params.userId;
